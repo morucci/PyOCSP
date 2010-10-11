@@ -20,16 +20,17 @@ import sys
 from lockfile import LockFile
 from daemon import DaemonContext
 
-class OcspDaemon(DaemonContext):
+class OCSPDaemon(DaemonContext):
     def __init__(self, redirect_output = '/tmp/ocsp_responder.log',
                  chroot = None,
                  detach = True,
-                 pidfile = '/var/run/ocsp_responder.pid'):
+                 pidfile = '/tmp/ocsp_responder.pid'):
 
         self.redirect_output = file(redirect_output, 'a')
         self.chroot = chroot
         self.detach = detach
         self.pidfile = pidfile
+
         if self.pidfile:
             self.pidfile = LockFile(pidfile)
         if not self.detach:
@@ -50,5 +51,5 @@ if __name__ == '__main__':
         sleep(30)
         print 'stop to work'
 
-    with OcspDaemon(detach = False, pidfile = None):
+    with OCSPDaemon(detach = False, pidfile = None):
         main()

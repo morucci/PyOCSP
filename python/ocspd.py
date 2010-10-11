@@ -17,6 +17,7 @@
 
 from optparse import OptionParser
 from ocspserver import OCSPServer
+from daemonize import OCSPDaemon
 from config import ConfigObject
 
 version = 0.1
@@ -44,8 +45,8 @@ def _main_loop(config_object):
 
 def _init_parser():
     parser = OptionParser(usage=usage)
-    #parser.add_option("-d", "--daemon",
-    #                  help="Daemon, detach from current console")
+    parser.add_option("-d", "--daemon",
+                      help="Daemon, detach from current console")
     #parser.add_option("-r", "--chroot",
     #                  help="Directory where to jail the process")
     parser.add_option("-p", "--port", default=2560,
@@ -75,4 +76,8 @@ def main():
     else:
         cfg = _parse_config(options.config)
 
-        _main_loop(cfg)
+        if options.daemon:
+            with OCSPDaemon():
+                __main_loop(cfg)
+        else:
+            _main_loop(cfg)
